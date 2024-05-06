@@ -5,6 +5,7 @@ from math import *
 o = object()
 
 class Transformacje:
+    
     def __init__(self, model: str = "wgs84"):
         """
         """
@@ -40,8 +41,8 @@ class Transformacje:
         if output == "dec_degree":
             return degrees(lat), degrees(lon), h 
         elif output == "dms":
-            lat = self.deg2dms(degrees(lat))
-            lon = self.deg2dms(degrees(lon))
+            lat = rad2dms(degrees(lat))
+            lon = rad2dms(degrees(lon))
             return f"{lat[0]:02d}:{lat[1]:02d}:{lat[2]:.2f}", f"{lon[0]:02d}:{lon[1]:02d}:{lon[2]:.2f}", f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
@@ -49,10 +50,10 @@ class Transformacje:
     def plh2xyz(self, p, l, h):
         """
         """
-        N = self.a / sqrt(1 - self.ecc2 * sin(p)**2)
-        X = (N + h) * np.cos(p) * np.cos(l)
-        Y = (N + h) * np.cos(p) * np.sin(l)
-        Z = ((N * (1 - self.ecc2)) + h) * np.sin(f)
+        N = self.a / sqrt(1 - self.ecc2 * sin(p*pi/180)**2)
+        X = (N + h) * np.cos(p*pi/180) * np.cos(l*pi/180)
+        Y = (N + h) * np.cos(p*pi/180) * np.sin(l*pi/180)
+        Z = ((N * (1 - self.ecc2)) + h) * np.sin(p*pi/180)
         return X, Y, Z
     
 if __name__ == "__main__":
@@ -71,7 +72,36 @@ if __name__ == "__main__":
         X = wsp[:,0]
         Y = wsp[:,1]
         Z = wsp[:,2]
-    phi, lam, h = geo.xyz2plh(X[0], Y[0], Z[0])
-    print(phi, lam, h)
-    with open('raport_xyz2plh', 'w') as p:
-        p.write('X [m] | Y [m] | Z[m] \n')
+        wyniki = []
+        for i in range(0, len(wsp)):
+            phi, lam, h = geo.xyz2plh(X[i], Y[i], Z[i])
+            wyniki.append([phi, lam, h])
+        wyniki = np.array(wyniki)
+            
+    with open('raport_xyz2plh.txt', 'w') as p:
+        p.write('      phi      |       lam      |  h [m]     \n')
+        for phi, lam, h in wyniki:
+            p.write(f'{phi:.12f}  {lam:.12f}  {h:.3f} \n')
+            
+    with open('raport_xyz2plh.txt', 'r') as l:
+        text = l.readlines()
+        dane = text[1:]
+        wsp_1 = []
+        for linia in dane:
+            elem = linia.replace(",", " ")
+            phi, lam, h = elem.split()
+            wsp_1.append([float(phi), float(lam), float(h)])
+        wsp_1 = np.array(wsp_1)
+        Phi = wsp_1[:,0]
+        Lam = wsp_1[:,1]
+        H = wsp_1[:,2]
+        wyniki2 = []
+        for i in range(0, len(wsp_1)):
+            X1, Y1, Z1 = geo.plh2xyz(Phi[i], Lam[i], H[i])
+            wyniki2.append([X1, Y1, Z1])
+        wyniki2 = np.array(wyniki2)
+        
+    with open('raport_plh2xyz.txt', 'w') as p:
+        p.write('    X [m]   |    Y [m]   |    Z [m]    \n')
+        for X, Y, Z in wyniki2:
+            p.write(f'{X:.3f}, {Y:.3f}, {Z:.3f} \n')
