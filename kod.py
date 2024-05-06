@@ -26,7 +26,7 @@ class Transformacje:
     def xyz2plh(self, X, Y, Z, output = "dec_degree"):
         """
         """
-        r   = sqrt(X**2 + Y**2)           
+        r = sqrt(X**2 + Y**2)           
         lat_prev = atan(Z / (r * (1 - self.ecc2)))    
         lat = 0
         while abs(lat_prev - lat) > 0.000001/206265:    
@@ -54,3 +54,24 @@ class Transformacje:
         Y = (N + h) * np.cos(p) * np.sin(l)
         Z = ((N * (1 - self.ecc2)) + h) * np.sin(f)
         return X, Y, Z
+    
+if __name__ == "__main__":
+    # utworzenie obiektu
+    geo = Transformacje(model = "wgs84")
+    # dane XYZ geocentryczne
+    with open('wsp_inp.txt', 'r') as t:
+        text = t.readlines()
+        dane = text[4:]
+        wsp = []
+        for linia in dane:
+            elem = linia.replace(",", " ")
+            x, y, z = elem.split()
+            wsp.append([float(x), float(y), float(z)])
+        wsp = np.array(wsp)
+        X = wsp[:,0]
+        Y = wsp[:,1]
+        Z = wsp[:,2]
+    phi, lam, h = geo.xyz2plh(X[0], Y[0], Z[0])
+    print(phi, lam, h)
+    with open('raport_xyz2plh', 'w') as p:
+        p.write('X [m] | Y [m] | Z[m] \n')
