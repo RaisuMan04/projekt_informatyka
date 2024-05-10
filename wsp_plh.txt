@@ -1,4 +1,4 @@
-Współrzedne geocentryczny ECEF stacji pemanentnej GNSS
+Współrzędne geodezyjne ECEF stacji permanentnej GNSS
 Obserwatorium Astronomiczno-Geodezyjne w Józefosławiu
 	  phi      |      lam      |   h    
 # -----------------------------------------------------
