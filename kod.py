@@ -68,16 +68,22 @@ class Transformacje:
     def plh2xyz(self, p, l, h):
         """
         """
-        N = self.a / sqrt(1 - self.ecc2 * sin(p*pi/180)**2)
-        X = (N + h) * np.cos(p*pi/180) * np.cos(l*pi/180)
-        Y = (N + h) * np.cos(p*pi/180) * np.sin(l*pi/180)
-        Z = ((N * (1 - self.ecc2)) + h) * np.sin(p*pi/180)
+        N = self.a / sqrt(1 - self.ecc2 * sin(p)**2)
+        X = (N + h) * np.cos(p) * np.cos(l)
+        Y = (N + h) * np.cos(p) * np.sin(l)
+        Z = ((N * (1 - self.ecc2)) + h) * np.sin(p)
         return X, Y, Z
     
     # XYZ - NEUp
-    def neu(self, X, Y, Z):
-        p, l, h = self.xyz2plh(X, Y, Z)
-        
+    def neup(self, p, l, h, X2, Y2, Z2):
+        R = np.array([[-np.sin(p)*np.cos(l), -np.sin(p), np.cos(p)*np.cos(l)],
+                      [-np.sin(p)*np.sin(l), np.cos(l), np.cos(p)*np.sin(l)],
+                      [np.cos(p), 0, np.sin(p)]])
+        X1, Y1, Z1 = self.plh2xyz(p, l, h)
+        dx = np.array([X1, Y1, Z1]) - np.array([X2, Y2, Z2])
+        print(dx)
+        dX = R @ dx
+        return(dX)
         
     # XYZ - GK
     
@@ -182,7 +188,7 @@ if __name__ == "__main__":
             if method == "plh2xyz":
                 wyniki2 = []
                 for i in range(0, len(wsp_plh)):
-                    X1, Y1, Z1 = geo.plh2xyz(Phi[i], Lam[i], H[i])
+                    X1, Y1, Z1 = geo.plh2xyz(Phi[i]*pi/180, Lam[i]*pi/180, H[i])
                     wyniki2.append([X1, Y1, Z1])
                 wyniki2 = np.array(wyniki2)
             else: # w tym momencie zostawiamy wsp by z nich skorzystać do GK
@@ -239,5 +245,18 @@ if __name__ == "__main__":
             r.write('      X [m]     |      Y[m]    \n')
             for x, y in wyniki4:
                 r.write(f'{x:.9f} {y:.9f} \n')
+         
+    # Mamy współrzędne PLH, chcemy mieć wektor NEU
+    elif method == "xyz2neu":
+        wyniki5 = []
+        wsp_a = input("Podaj współrzędne XYZ punktu początkowego wektora przestrzennego: ")
+        elem = wsp_a.replace(", ", " ")
+        X2, Y2, Z2 = elem.split()
+        X2, Y2, Z2 = float(X2), float(Y2), float(Z2)
+        for phi, lam, h in wyniki1:
+            dX = geo.neup(phi, lam, h, X2, Y2, Z2)
+            wyniki5.append(dX)
+        wyniki5 = np.array(wyniki5)
               
 print("Program został wykonany poprawnie :)")
+print(wyniki5)
