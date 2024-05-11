@@ -25,7 +25,7 @@ class Transformacje:
         
     # PODAWANIE JEDNOSTKI
     jednostka = sys.argv[2]
-    if jednostka == "dec_degree" or jednostka == "dms":
+    if jednostka == "dec_degree" or jednostka == "dms" or jednostka == "bez_jednostki":
         pass
     else:
         raise NotImplementedError(f"Jednostka '{jednostka}' to jednostka nieobługiwana albo nieprawidłowa")
@@ -76,7 +76,8 @@ class Transformacje:
     
     # XYZ - NEUp
     def neu(self, X, Y, Z):
-        p, l, h = xyz2plh(X, Y, Z)
+        p, l, h = self.xyz2plh(X, Y, Z)
+        
         
     # XYZ - GK
     
@@ -87,11 +88,11 @@ class Transformacje:
 
     # sigma
     def sigma(self, p):
-        A0 = 1 -(self.ecc2 / 4) -((3 * self.ecc2 ** 2) / 64) -((5 * self.ecc2 ** 3) / 256)
+        A0 = 1 - (self.ecc2 / 4) -((3 * self.ecc2 ** 2) / 64) -((5 * self.ecc2 ** 3) / 256)
         A2 = (3 / 8) * (self.ecc2 + (self.ecc2 ** 2) / 4 + (15 * self.ecc2 ** 3) / 128)
         A4 = (15 / 256) * (self.ecc2 ** 2 + (3 * self.ecc2 ** 3) / 4)
         A6 = (35 * self.ecc2 ** 3) / 3072
-        sigma = self.a * ((A0 * p) - (A2 * sin(2 * p)) + (A4 * sin(4 * p)) -(A6 * sin(6 * p)))
+        sigma = self.a * ((A0 * p) - (A2 * sin(2*p)) + (A4 * sin(4*p)) - (A6 * sin(6*p)))
         return(sigma)
 
     # PL - XY GK
@@ -209,28 +210,34 @@ if __name__ == "__main__":
         with open('raport_plh2xyz.txt', 'w') as p:
             p.write('    X [m]   |    Y [m]   |    Z [m]    \n')
             for X, Y, Z in wyniki2:
-                p.write(f'{X:.3f}, {Y:.3f}, {Z:.3f} \n')
+                p.write(f'{X:.3f} {Y:.3f} {Z:.3f} \n')
                 
     # Mamy współrzędne PLH, chcemy mieć XY 2000            
     elif method == "pl2xygk2000":
         wyniki3 = []
         for phi, lam, h in wsp_plh:
-            lam_0, n = geo.strefy2000(lam)
-            x, y = geo.pl2xygk(phi, lam, lam_0)
+            lam_0, n = geo.strefy2000(lam*pi/180)
+            x, y = geo.pl2xygk(phi*pi/180, lam*pi/180, lam_0)
             x_2000, y_2000 = geo.xy_2000(x, y, n)
             wyniki3.append([x_2000, y_2000])
         wyniki3 = np.array(wyniki3)
-            # with open("raport_pl2xygk2000")
+        with open('raport_pl2xygk2000.txt', 'w') as r:
+            r.write('       X [m]     |       Y[m]    \n')
+            for x, y in wyniki3:
+                r.write(f'{x:.9f} {y:.9f} \n')
         
     # Mamy współrzędne PLH, chcemy mieć XY 1992            
     elif method == "pl2xygk1992":
         wyniki4 = []
         for phi, lam, h in wsp_plh:
             lam_0 = geo.dms2rad(19, 0, 0)
-            x, y = geo.pl2xygk(phi, lam, lam_0)
+            x, y = geo.pl2xygk(phi*pi/180, lam*pi/180, lam_0)
             x_1992, y_1992 = geo.xy_1992(x, y)
             wyniki4.append([x_1992, y_1992])
         wyniki4 = np.array(wyniki4)
+        with open('raport_pl2xygk1992.txt', 'w') as r:
+            r.write('      X [m]     |      Y[m]    \n')
+            for x, y in wyniki4:
+                r.write(f'{x:.9f} {y:.9f} \n')
               
 print("Program został wykonany poprawnie :)")
-print(phi)
