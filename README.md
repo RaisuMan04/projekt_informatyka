@@ -7,7 +7,7 @@ INSTRUKCJA KORZYSTANIA Z PLIKU TRANSFORMACJE.PY
 	PL - XY PL_1992.
 
 2. JAKIE SĄ WYMAGANIA, BY PROGRAM DZIAŁAŁ NA KOMPUTERZE?
-	Aby program działał prawidłowo użytkownić musi posiadać na swoim komputerze zainstalowaną bibliotekę Numpy oraz skonfigurowane
+	Aby program działał prawidłowo użytkownik musi posiadać na swoim komputerze zainstalowaną bibliotekę Numpy oraz skonfigurowane
 	środowisko Pythona. Dodatkowo zainstalowaną wersją Pythona powinna być wersja 3.11, aczkolwiek skrypt powinien zadziałać też 
 	dla wersji 3.12.
 
