@@ -18,7 +18,7 @@ INSTRUKCJA KORZYSTANIA Z PLIKU TRANSFORMACJE.PY
 4. JAK UŻYWAĆ PROGRAMU?
 	Aby użyć programu trzeba spełnić ww. wymagania. Po spełnieniu ich należy uruchomić wiersz poleceń w folderze instalacyjnym programu
 	(w moim przypadku ścieżka: "C:\Users\Julka\Desktop\Studia\Informatyka geodezyjna II\PROJEKT INF\projekt_informatyka").
-	Po uruchomieniu programu należy wpisać komendę w następującego kolejności:
+	Po uruchomieniu programu należy wpisać komendę w następującej kolejności:
 	python transformacje.py [transformacja] [jednostka] [model_elipsoidy] [plik_ze_wspolrzednymi]
 	  
 	Niżej podane są wartości zmiennych (takie nazwy należy podawać, by program zadziałał):
