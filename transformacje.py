@@ -81,7 +81,6 @@ class Transformacje:
                       [np.cos(p), 0, np.sin(p)]])
         X1, Y1, Z1 = self.plh2xyz(p, l, h)
         dx = np.array([X1, Y1, Z1]) - np.array([X2, Y2, Z2])
-        print(dx)
         dX = R @ dx
         return(dX)
         
