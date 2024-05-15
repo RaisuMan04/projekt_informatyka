@@ -35,7 +35,7 @@ INSTRUKCJA KORZYSTANIA Z PLIKU TRANSFORMACJE.PY
 	python transformacje.py pl2xygk2000 bez_jednostki wgs84 wsp_plh.txt
 	python transformacje.py pl2xygk1992 bez_jednostki grs80 wsp_plh.txt
 
-W przypadku chęci skorzystania z transformacji neu, użytkownik musi podać współrzędne początkowe wektora przestrzennego w postaci X Y Z (ze spacjami pomiędzy).
+W przypadku chęci skorzystania z transformacji neu, użytkownik musi podać współrzędne początkowe wektora przestrzennego w postaci X Y Z LUB X, Y, Z (oba sposoby zadziałają).
 	
 Gdy program zostanie wywołany, jego prawidłowe wykonanie jest potwierdzone wiadomością: 
 "Program został wykonany poprawnie :)".
